@@ -18,8 +18,6 @@ public class PlayerController : NetworkTransform
     // Référence à la caméra principale
     protected Camera theCamera ;
 
-    
-
     // Appelé lors de l'apparition du joueur sur le réseau
     public override void OnNetworkSpawn()
     {
@@ -76,6 +74,14 @@ public class PlayerController : NetworkTransform
         if (!IsSpawned || !HasAuthority)
             return;
 
+        // ✅ AJOUT : Touche C pour récupérer la caméra
+        // (utile quand un client VR a perturbé la caméra du client desktop)
+        if (Keyboard.current.cKey.wasPressedThisFrame)
+        {
+            Debug.Log("Touche C pressée : récupération de la caméra");
+            CatchCamera();
+        }
+
         // Récupération des inputs clavier (A/D pour rotation, W/S pour avancer/reculer)
         float x = (Keyboard.current.dKey.isPressed ? 1f : 0f) - (Keyboard.current.aKey.isPressed ? 1f : 0f);
         float z = (Keyboard.current.wKey.isPressed ? 1f : 0f) - (Keyboard.current.sKey.isPressed ? 1f : 0f);
@@ -90,9 +96,4 @@ public class PlayerController : NetworkTransform
         // Translation locale sur l'axe Z (avant/arrière)
         transform.Translate(0, 0, z);
     }
-
-
-    
-
-    
 }
